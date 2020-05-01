@@ -1,0 +1,24 @@
+version: "3.4"
+
+services:
+  pgsql.local:
+    image: mdillon/postgis:10
+    volumes:
+      - pgsql.local.data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  healfi-api.server:
+    image: 605050613890.dkr.ecr.us-east-1.amazonaws.com/healfi:latest
+    depends_on:
+      - pgsql.local
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - 80:80
+
+volumes:
+  pgsql.local.data:
