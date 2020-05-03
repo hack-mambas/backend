@@ -10,5 +10,10 @@
             Causa = causa;
             Erros = erros;
         }
+
+        public FailViewModel(string causa)
+        {
+            this.Causa = causa;
+        }
     }
 }

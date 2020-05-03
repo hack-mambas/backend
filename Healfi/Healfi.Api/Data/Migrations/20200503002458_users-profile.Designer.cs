@@ -3,15 +3,17 @@ using System;
 using Healfi.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Healfi.Api.Data.Migrations
 {
     [DbContext(typeof(HealfiContext))]
-    partial class HealfiContextModelSnapshot : ModelSnapshot
+    [Migration("20200503002458_users-profile")]
+    partial class usersprofile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -193,7 +195,7 @@ namespace Healfi.Api.Data.Migrations
                     b.HasIndex("EnderecoId")
                         .IsUnique();
 
-                    b.ToTable("EnderecosConsumidor");
+                    b.ToTable("EnderecoConsumidor");
                 });
 
             modelBuilder.Entity("Healfi.Api.Domain.EnderecoProdutor", b =>
@@ -215,7 +217,7 @@ namespace Healfi.Api.Data.Migrations
 
                     b.HasIndex("ProdutorId");
 
-                    b.ToTable("EnderecosProdutor");
+                    b.ToTable("EnderecoProdutor");
                 });
 
             modelBuilder.Entity("Healfi.Api.Domain.Especialidade", b =>
@@ -308,7 +310,7 @@ namespace Healfi.Api.Data.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<Guid?>("EnderecoId")
+                    b.Property<Guid>("EnderecoId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("InfosPessoais")
@@ -714,7 +716,9 @@ namespace Healfi.Api.Data.Migrations
                 {
                     b.HasOne("Healfi.Api.Domain.EnderecoProdutor", "Endereco")
                         .WithMany()
-                        .HasForeignKey("EnderecoId");
+                        .HasForeignKey("EnderecoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Healfi.Api.Domain.Usuario", "Usuario")
                         .WithOne("Produtor")

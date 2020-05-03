@@ -3,9 +3,11 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using Healfi.Api.Application.Common;
+using Healfi.Api.Application.Services;
 using Healfi.Api.Data;
 using Healfi.Api.Domain;
-using Healfi.Api.Server.Middlewares;
+using Healfi.Api.Server.Filters;
+using Healfi.Api.Server.Middleware;
 using Healfi.Api.Server.Workers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -62,7 +64,7 @@ namespace Healfi.Api
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Security:Secret"])),
-                        ValidateAudience = true,
+                        ValidateAudience = false,
                         ValidateIssuer = false,
                         ValidateLifetime = false
                     };
@@ -121,17 +123,31 @@ namespace Healfi.Api
                     o.InvalidModelStateResponseFactory = actionContext => new BadRequestObjectResult(new FailViewModel("Dados inválidos", actionContext.ModelState.SelectMany(x => x.Value.Errors).ElementAtOrDefault(0)?.ErrorMessage));
                 })
                 .AddControllers()
+                .AddMvcOptions((opt) =>
+                {
+                    opt.Filters.Add(typeof(RequestTransactionFilter<HealfiContext>));
+                })
                 .AddJsonOptions((opt) =>
                 {
                     opt.JsonSerializerOptions.IgnoreNullValues = false;
                     opt.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                 });
 
+            services.AddHttpContextAccessor();
             services.AddHostedService<MigrationWorker>();
+            services.AddScoped<AuthService>();
+            services.AddScoped<CidadesService>();
+            services.AddScoped<CategoriaPadraosService>();
+            services.AddScoped<ConquistasService>();
+            services.AddScoped<ConsumidoresService>();
+            services.AddScoped<EspecialidadesService>();
+            services.AddScoped<ProdutoresService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseGlobalErrorHandler();
+            
             app.UseCors(c => c
                 .AllowAnyHeader()
                 .AllowAnyMethod()
@@ -142,6 +158,8 @@ namespace Healfi.Api
             
             app.UseRouting();
 
+            app.UseAuthorization();
+            
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             app
@@ -152,10 +170,8 @@ namespace Healfi.Api
                     s.DisplayRequestDuration();
                     s.DisplayOperationId();
                     s.EnableValidator();
-                    s.DefaultModelExpandDepth(2);
                     s.DefaultModelRendering(ModelRendering.Model);
-                    s.DefaultModelsExpandDepth(-1);
-                    s.DocExpansion(DocExpansion.Full);
+                    s.DocExpansion(DocExpansion.List);
                     s.EnableDeepLinking();
                     s.ShowExtensions();
 

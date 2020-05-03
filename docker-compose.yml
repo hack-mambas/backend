@@ -10,7 +10,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-
+  
   healfi-api.server:
     image: 605050613890.dkr.ecr.us-east-1.amazonaws.com/healfi:latest
     depends_on:
