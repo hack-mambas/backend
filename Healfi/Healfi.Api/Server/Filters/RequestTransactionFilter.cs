@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,7 +22,15 @@ namespace Healfi.Api.Server.Filters
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            if (context.Result is OkResult || context.Result is CreatedResult)
+            var accepteds = new[]
+            {
+                typeof(OkResult),
+                typeof(OkObjectResult),
+                typeof(CreatedResult),
+                typeof(NoContentResult)
+            };
+            
+            if (accepteds.Any(x => context.Result.GetType() == x))
             {
                 _context.SaveChanges();
             }

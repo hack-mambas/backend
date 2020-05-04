@@ -137,5 +137,90 @@ namespace Healfi.Api.Application.Services
 
             return await ObterPorId(command.Id);
         }
+
+        public Task<Cidade> CadastrarCidadeAtendida(Guid produtorId, Guid cidadeId)
+        {
+            var cidade = new CidadeAtendida()
+            {
+                Id = Guid.NewGuid(),
+                CidadeId = cidadeId,
+                ProdutorId = produtorId
+            };
+
+
+            _context.CidadeAtendidas.Adicionar(cidade);
+
+            return _context.Cidades.FindAsync(cidadeId).AsTask();
+        }
+
+        public Task<List<Cidade>> ObterCidadesAtendidas(Guid produtorId, string search)
+        {
+            var query = _context.CidadeAtendidas
+                .Where(c => c.ProdutorId == produtorId);
+            
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(c => c.Cidade.Nome.ToUpper().Contains(search.ToUpper().Trim()));
+            }
+
+            return query.Select(c => c.Cidade).ToListAsync();
+        }
+
+        public Task<Especialidade> CadastrarEspecialidadesVinculadas(Guid id, Guid especialidadeId)
+        {
+            var cidade = new EspecialidadeAtendida()
+            {
+                Id = Guid.NewGuid(),
+                EspecialidadeId = especialidadeId,
+                ProdutorId = id
+            };
+
+
+            _context.EspecialidadesAtendidas.Adicionar(cidade);
+
+            return _context.Especialidades.FindAsync(especialidadeId).AsTask();
+        }
+
+        public Task<List<Especialidade>> ObterEspecialidadesVinculadas(Guid id, string search)
+        {
+            var query = _context.EspecialidadesAtendidas
+                .Where(c => c.ProdutorId == id);
+            
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(c => c.Especialidade.Nome.ToUpper().Contains(search.ToUpper().Trim()));
+            }
+
+            return query.Select(c => c.Especialidade).ToListAsync();
+        }
+
+        public Task<FormaEntrega> CadastrarFormasEntregaVinculadas(Guid id, Guid formaEntregaId, string observacoes)
+        {
+            var cidade = new FormaEntregaAtendida()
+            {
+                Id = Guid.NewGuid(),
+                FormaEntregaId = formaEntregaId,
+                ProdutorId = id,
+                Observacoes = observacoes
+            };
+
+
+            _context.FormasEntregaAtendidas.Adicionar(cidade);
+
+            return _context.FormasEntrega.FindAsync(formaEntregaId).AsTask();
+        }
+
+        public Task<List<FormaEntrega>> ObterFormasEntregaVinculadas(Guid id, string search)
+        {
+            var query = _context.FormasEntregaAtendidas
+                .Where(c => c.ProdutorId == id);
+            
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(c => c.FormaEntrega.Nome.ToUpper().Contains(search.ToUpper().Trim()));
+            }
+
+            return query.Select(c => c.FormaEntrega).ToListAsync();
+        }
     }
 }

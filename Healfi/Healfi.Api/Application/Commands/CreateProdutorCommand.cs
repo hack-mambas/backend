@@ -13,6 +13,7 @@ namespace Healfi.Api.Application.Commands
         [Required]
         public string Senha { get; set; }
         public string NomeEmpresa { get; set; }
+        public string Endereco { get; set; }
         public Guid? CidadeId { get; set; }
 
         public TipoVinculoEnum TipoVinculo => TipoVinculoEnum.Produtor;

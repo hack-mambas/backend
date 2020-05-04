@@ -7,7 +7,7 @@ using Healfi.Api.Application.Services;
 using Healfi.Api.Data;
 using Healfi.Api.Domain;
 using Healfi.Api.Server.Filters;
-using Healfi.Api.Server.Middleware;
+using Healfi.Api.Server.Middlewares;
 using Healfi.Api.Server.Workers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -142,6 +142,8 @@ namespace Healfi.Api
             services.AddScoped<ConsumidoresService>();
             services.AddScoped<EspecialidadesService>();
             services.AddScoped<ProdutoresService>();
+            services.AddScoped<CategoriasService>();
+            services.AddScoped<ProdutosService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

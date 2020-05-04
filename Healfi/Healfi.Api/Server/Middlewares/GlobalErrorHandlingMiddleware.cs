@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace Healfi.Api.Server.Middleware
+namespace Healfi.Api.Server.Middlewares
 {
     public static class GlobalErrorHandlingMiddleware
     {

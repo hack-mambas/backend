@@ -87,6 +87,7 @@ namespace Healfi.Api.Application.Services
                 Produtor = new Produtor
                 {
                     Id = produtorId,
+                    NomeEmpresa = source.NomeEmpresa,
                     CadastroCompleto = false
                 }
             };
@@ -102,16 +103,24 @@ namespace Healfi.Api.Application.Services
                     Endereco = new Endereco()
                     {
                         Id = Guid.NewGuid(),
-                        CidadeId = source.CidadeId
+                        CidadeId = source.CidadeId,
+                        Logradouro = source.Endereco
                     }
                 });
-
                 usuario.Produtor.EnderecoId = end;
+                
+                if (source.CidadeId.HasValue)
+                {
+                    _context.CidadeAtendidas.Adicionar(new CidadeAtendida()
+                    {
+                        Id = Guid.NewGuid(),
+                        CidadeId = source.CidadeId.Value,
+                        ProdutorId = produtorId
+                    });
+                }
 
                 _context.Produtores.Update(usuario.Produtor);
             }
-
-            await _context.SaveChangesAsync();
             
             return r;
         }
