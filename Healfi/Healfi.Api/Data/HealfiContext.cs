@@ -15,6 +15,9 @@ namespace Healfi.Api.Data
         public virtual DbSet<Endereco> Enderecos { get; set;}
         public virtual DbSet<Cidade> Cidades { get; set;}
         public virtual DbSet<Especialidade> Especialidades { get; set;}
+        public virtual DbSet<FormaEntrega> FormasEntrega { get; set;}
+        public virtual DbSet<FormaEntregaAtendida> FormasEntregaAtendidas { get; set;}
+        public virtual DbSet<EspecialidadeAtendida> EspecialidadesAtendidas { get; set;}
         public virtual DbSet<Tag> Tags { get; set;}
         public virtual DbSet<CidadeAtendida> CidadeAtendidas { get; set;}
         public virtual DbSet<CategoriaPadrao> CategoriasPadrao { get; set;}
@@ -52,7 +55,8 @@ namespace Healfi.Api.Data
                 .HasConversion(new EnumToNumberConverter<GeneroEnum, int>());
 
             builder.Entity<Usuario>()
-                .Property(t => t.LinkFotoPerfil);
+                .Property(t => t.LinkFotoPerfil)
+                .HasColumnType("text");
 
             builder.Entity<Usuario>()
                 .Property(t => t.GoogleId);
@@ -107,6 +111,19 @@ namespace Healfi.Api.Data
                 .IsRequired();
 
             builder.Entity<Especialidade>()
+                .Property(c => c.Cor)
+                .IsRequired();
+            
+            builder.Entity<FormaEntrega>().ToTable(nameof(FormaEntrega));
+
+            builder.Entity<FormaEntrega>()
+                .HasKey(c => c.Id);
+
+            builder.Entity<FormaEntrega>()
+                .Property(c => c.Nome)
+                .IsRequired();
+
+            builder.Entity<FormaEntrega>()
                 .Property(c => c.Cor)
                 .IsRequired();
 
@@ -175,7 +192,8 @@ namespace Healfi.Api.Data
                 .Property(c => c.LinkGoogleMeuNegocio);
 
             builder.Entity<Produtor>()
-                .Property(c => c.LinkFotoCapa);
+                .Property(c => c.LinkFotoCapa)
+                .HasColumnType("text");
 
             builder.Entity<Produtor>()
                 .Property(c => c.CadastroCompleto)
@@ -215,6 +233,22 @@ namespace Healfi.Api.Data
             builder.Entity<EspecialidadeAtendida>()
                 .HasOne(c => c.Produtor)
                 .WithMany(c => c.EspecialidadesAtendidas)
+                .HasForeignKey(c => c.ProdutorId);
+            
+            builder.Entity<FormaEntregaAtendida>().ToTable(nameof(FormaEntregaAtendida));
+            
+            builder.Entity<FormaEntregaAtendida>().HasKey(c => c.Id);
+
+            builder.Entity<FormaEntregaAtendida>().Property(c => c.Observacoes);
+
+            builder.Entity<FormaEntregaAtendida>()
+                .HasOne(c => c.FormaEntrega)
+                .WithMany()
+                .HasForeignKey(c => c.FormaEntregaId);
+
+            builder.Entity<FormaEntregaAtendida>()
+                .HasOne(c => c.Produtor)
+                .WithMany(c => c.FormasEntrega)
                 .HasForeignKey(c => c.ProdutorId);
 
             builder.Entity<CategoriaPadrao>().ToTable(nameof(CategoriaPadrao));
@@ -257,7 +291,8 @@ namespace Healfi.Api.Data
                 .Property(c => c.Nome);
             
             builder.Entity<Produto>()
-                .Property(c => c.LinkFoto);
+                .Property(c => c.LinkFoto)
+                .HasColumnType("text");
             
             builder.Entity<Produto>()
                 .Property(c => c.DescricaoBreve);

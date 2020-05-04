@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -69,7 +70,6 @@ namespace Healfi.Api.Data.Extensions
                 CondicaoConquista = "Efetuar Cadastro"
             });
             
-            
             context.Especialidades.Adicionar(new Especialidade()
             {
                 Id = Guid.NewGuid(),
@@ -77,12 +77,41 @@ namespace Healfi.Api.Data.Extensions
                 Cor = "#15b37e"
             });
             
+            context.Especialidades.Adicionar(new Especialidade()
+            {
+                Id = Guid.NewGuid(),
+                Nome = "Laticínios",
+                Cor = "#15b37e"
+            });
             
             context.CategoriasPadrao.Adicionar(new CategoriaPadrao()
             {
                 Id = Guid.NewGuid(),
                 Nome = "Cestas"
             });
+            
+            context.FormasEntrega.AddRange(new List<FormaEntrega>()
+            {
+                new FormaEntrega()
+                {
+                    Id = Guid.NewGuid(),
+                    Nome = "Entrega expressa",
+                    Cor = "#000"
+                },
+                new FormaEntrega()
+                {
+                    Id = Guid.NewGuid(),
+                    Nome = "Entrega normal",
+                    Cor = "#000"
+                },
+                new FormaEntrega()
+                {
+                    Id = Guid.NewGuid(),
+                    Nome = "Entrega Presencial",
+                    Cor = "#000"
+                }
+            });
+            
 
             await context.SaveChangesAsync(token);
         }

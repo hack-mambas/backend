@@ -258,6 +258,49 @@ namespace Healfi.Api.Data.Migrations
                     b.ToTable("EspecialidadeAtendida");
                 });
 
+            modelBuilder.Entity("Healfi.Api.Domain.FormaEntrega", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Cor")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FormaEntrega");
+                });
+
+            modelBuilder.Entity("Healfi.Api.Domain.FormaEntregaAtendida", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("FormaEntregaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Observacoes")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ProdutorId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FormaEntregaId");
+
+                    b.HasIndex("ProdutorId");
+
+                    b.ToTable("FormaEntregaAtendida");
+                });
+
             modelBuilder.Entity("Healfi.Api.Domain.Produto", b =>
                 {
                     b.Property<Guid>("Id")
@@ -690,6 +733,21 @@ namespace Healfi.Api.Data.Migrations
 
                     b.HasOne("Healfi.Api.Domain.Produtor", "Produtor")
                         .WithMany("EspecialidadesAtendidas")
+                        .HasForeignKey("ProdutorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Healfi.Api.Domain.FormaEntregaAtendida", b =>
+                {
+                    b.HasOne("Healfi.Api.Domain.FormaEntrega", "FormaEntrega")
+                        .WithMany()
+                        .HasForeignKey("FormaEntregaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Healfi.Api.Domain.Produtor", "Produtor")
+                        .WithMany("FormasEntrega")
                         .HasForeignKey("ProdutorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -22,5 +22,6 @@ namespace Healfi.Api.Domain
         public ICollection<EspecialidadeAtendida> EspecialidadesAtendidas { get; set; }
         public ICollection<Categoria> Categorias { get; set; }
         public ICollection<Produto> Produtos { get; set; }
+        public ICollection<FormaEntregaAtendida> FormasEntrega { get; set; }
     }
 }
